@@ -10,12 +10,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 
 def check_if_vpn():
     try:
-        production = True
-
-        if production == True:
-            ip = get('https://api.ipify.org').text
-        else:
-            ip = str("8.8.8.8")
+        ip = get('https://api.ipify.org').text
 
         prefixes = ["24.0", "24.16", "24.30", "24.34", "24.60", "24.91", "24.98",
         "24.118", "24.125", "24.126", "24.128", "24.129", "24.130", "24.147", "24.218",
