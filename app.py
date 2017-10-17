@@ -28,7 +28,10 @@ def check_if_vpn():
         "98.224", "98.240", "98.242", "98.244", "98.248", "107.2", "107.4", "174.48"]
 
         if ip.startswith(tuple(prefixes)):
+            print('VPN Disabled! - Disconnecting.')
             os.system('disable_adaptor.bat')
+        else:
+            print('VPN Enabled!')
 
     except Exception as e:
         print("Not behind VPN - network adaptor disabled")
