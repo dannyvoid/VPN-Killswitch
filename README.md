@@ -1,3 +1,6 @@
+**CHECKS EVERY 10 SECONDS TO SEE IF YOU HAVE A COMCAST IP**
+**IF YOU DO IT WILL DISABLE YOUR PRIMARY NETWORK ADAPTOR**
+
 Super sloppy, but 'works'...
 
 Install apscheduler with pip, and run with python 3
