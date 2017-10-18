@@ -1,17 +1,30 @@
 from datetime import datetime
 from requests import get
 
-from time import gmtime, strftime
-
 import os
 import time
+import ctypes
 import logging
 import subprocess
 
 from apscheduler.schedulers.background import BackgroundScheduler
 
-def check_if_vpn():
+def welcome():
+    stamp = str(datetime.now())
+    print('############################')
+    print('###  VPN-Killswitch 1.0  ###')
+    print('### Created by DannyVoid ###')
+    print('############################')
+    print('\nStarted at %s' % (stamp))
+    print('-------------------------------------\n')
 
+def is_admin():
+    try:
+        return ctypes.windll.shell32.IsUserAnAdmin()
+    except:
+        return False
+
+def check_if_vpn():
     try:
         ip = get('https://api.ipify.org').text
 
@@ -28,25 +41,27 @@ def check_if_vpn():
         "174.48"]
 
         if ip.startswith(tuple(xfinity_prefixes)):
-            print('VPN Disabled! - Disconnecting.\n')
-            os.system('disable_adaptor.bat')
+            stamp = str(datetime.now())
+            print('VPN Error! - %s' % (stamp))
+            print('Disconnecting. - %s' % (stamp))
+            subprocess.call('disable_adapter.bat', stdout=subprocess.PIPE)
 
         else:
-            stamp = strftime("%Y-%m-%d %H:%M:%S", gmtime())
+            stamp = str(datetime.now())
             print('VPN Enabled! - %s' % (stamp))
 
     # I need better error handling.
     # Right now this just pretends that
     # any error is a network error.
     except Exception as e:
-        stamp = strftime("%Y-%m-%d %H:%M:%S", gmtime())
+        stamp = str(datetime.now())
         print('Network Offline. - %s' % (stamp))
 
 if __name__ == '__main__':
     scheduler = BackgroundScheduler()
     scheduler.add_job(check_if_vpn, 'interval', seconds=5)
     scheduler.start()
-    check_if_vpn()
+    welcome()
 
     try:
         while True:
