@@ -1,6 +1,6 @@
 # VPN-Killswitch
 
-Disables your primary network adapter if you're using an xFinity IP address. Checks every 5 seconds.
+Disables your primary network adapter if you're using an xfinity IP address. Checks every 5 seconds.
 
 ## Getting Started
 
