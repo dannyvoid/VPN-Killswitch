@@ -20,7 +20,7 @@ pip install apscheduler
 Edit line 13 of **start.bat** to cd to the correct path of your VPN-Killswitch.
 
 ```batch
-cd "C:\Users\perso\Document\VPN Killswitch"
+cd "C:\Path\To\Your\VPN-Killswitch\Directory"
 ```
 
 Replace **Ethernet** on line 14 of **disable_adapter.bat** with the name of your primary adapter.
