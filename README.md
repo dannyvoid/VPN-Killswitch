@@ -23,13 +23,13 @@ Edit line 13 of **start.bat** to cd to the correct path of your VPN-Killswitch.
 cd "C:\Users\perso\Document\VPN Killswitch"
 ```
 
-Replace **Ethernet** on line 14 of **disable_adapter.bat** with the name of your primary adapter
+Replace **Ethernet** on line 14 of **disable_adapter.bat** with the name of your primary adapter.
 
 ```batch
 netsh interface set interface Ethernet DISABLED >NUL
 ```
 
-and line 13 of **enable_adapter.bat**.
+Finally, do the same for line 13 of **enable_adapter.bat**.
 
 ```batch
 netsh interface set interface Ethernet ENABLED >NUL
