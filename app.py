@@ -1,11 +1,11 @@
-from datetime import datetime
-from requests import get
-
 import os
 import time
 import ctypes
 import logging
 import subprocess
+
+from requests import get
+from datetime import datetime
 
 from apscheduler.schedulers.background import BackgroundScheduler
 
