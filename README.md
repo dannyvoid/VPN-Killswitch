@@ -33,8 +33,6 @@ network_adapter = 'Ethernet'
 
 ## To-do
 
-* Have actual error handling.
-* ~~Remove the use of .bat files.~~
 * Work with more ISPs.
 
 ## Built With
