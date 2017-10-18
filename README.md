@@ -1,11 +1,36 @@
-**CHECKS EVERY 10 SECONDS TO SEE IF YOU HAVE A COMCAST IP**
+# VPN-Killswitch
 
-**IF YOU DO, IT WILL DISABLE YOUR PRIMARY NETWORK ADAPTOR**
+Disables your primary network adapter if you're using an xFinity IP address. Checks every 5 seconds.
 
-Super sloppy, but 'works'...
+## Getting Started
 
-Install apscheduler with pip, and run with python 3
+This will get you up and running
 
-Name your primary network adaptor in 'disable_adaptor.bat' and 'enable_adaptor.bat'
+### Prerequisites
 
-Run 'start_killswitch.bat'
+* Python 3
+* apscheduler via [pip](http://pypi.python.org/pypi/pip)
+
+```
+pip install apscheduler
+```
+
+### Config
+
+Replace **Ethernet** on line 14 of **disable_adapter.bat** and line 13 of **enable_adapter.bat** with the name of your primary adapter.
+
+
+## To-do
+
+* Have actual error handling.
+* Remove the use of .bat files.
+* Work with more ISPs.
+
+## Built With
+
+* Python 3
+* apscheduler
+
+## Authors
+
+* **DannyVoid**
