@@ -50,7 +50,7 @@ def check_if_vpn():
 
 if __name__ == '__main__':
     scheduler = BackgroundScheduler()
-    scheduler.add_job(check_if_vpn, 'interval', max_instances=5, seconds=1)
+    scheduler.add_job(check_if_vpn, 'interval', seconds=10)
     scheduler.start()
     welcome()
 
