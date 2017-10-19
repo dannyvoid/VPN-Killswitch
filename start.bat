@@ -11,4 +11,4 @@ EXIT
 
 :start
 cd /d %~dp0
-python3 app.py
+python app.py
