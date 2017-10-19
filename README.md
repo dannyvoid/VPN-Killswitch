@@ -17,12 +17,6 @@ pip install apscheduler
 
 ### Config
 
-* Edit line 13 of **start.bat** to cd to the correct path of your VPN-Killswitch.
-
-```batch
-cd "C:\Path\To\Your\VPN-Killswitch\Directory"
-```
-
 * Replace **Ethernet** on line 13 of **app.py**.
 
 ```python
