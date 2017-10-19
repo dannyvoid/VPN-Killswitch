@@ -10,5 +10,5 @@ MSHTA "javascript: var shell = new ActiveXObject('shell.application'); shell.She
 EXIT
 
 :start
-cd "C:\Path\To\Your\VPN-Killswitch\Directory"
-python app.py
+cd /d %~dp0
+python3 app.py
