@@ -17,10 +17,10 @@ pip install apscheduler
 
 ### Config
 
-* Replace **Ethernet** with the name of your network adapter on line 14 of **app.py**.
+* Replace **Ethernet** with the name of your network adapter on line 11 of **app.py**.
 
 ```python
-network_adapter = 'Ethernet'
+adapter = 'Ethernet'
 ```
 
 * And finally, run **start.bat** as an administrator.
