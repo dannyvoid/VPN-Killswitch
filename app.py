@@ -46,16 +46,16 @@ def vpn_check():
             ip = get('https://api.ipify.org').text
             if ip.startswith(tuple(xfinity_prefixes)):
                 stamp = str(datetime.now())
-                print('VPN Not Detected! {}'.format(stamp))
+                print('{} - VPN Not Detected!'.format(stamp))
                 subprocess.call('netsh interface set interface {} DISABLED'.format(network_adapter), stdout=open(os.devnull, 'wb'))
             else:
                 stamp = str(datetime.now())
-                print('VPN Working!      {}'.format(stamp))
+                print('{} - VPN Working!'.format(stamp))
         except Exception:
             pass
     else:
         stamp = str(datetime.now())
-        print('Network Offline!  {}'.format(stamp))
+        print('{} - Network Offline!'.format(stamp))
 
 if __name__ == '__main__':
     scheduler = BackgroundScheduler()
