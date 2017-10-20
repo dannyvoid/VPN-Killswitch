@@ -8,7 +8,7 @@ from requests import get
 
 from apscheduler.schedulers.background import BackgroundScheduler
 
-network_adapter = 'Ethernet'
+adapter = 'Ethernet'
 
 xfinity_prefixes = ['24.0', '24.16', '24.30', '24.34', '24.60', '24.91',
                     '24.98', '24.118', '24.125', '24.126', '24.128', '24.129', '24.130', '24.147',
@@ -23,7 +23,7 @@ xfinity_prefixes = ['24.0', '24.16', '24.30', '24.34', '24.60', '24.91',
 
 def welcome():
     print('############################')
-    print('###  VPN-Killswitch 2.0  ###')
+    print('###  VPN-Killswitch 2.1  ###')
     print('### Created by DannyVoid ###')
     print('############################')
     print('\nStarted at {}'.format(str(datetime.now())))
@@ -45,8 +45,8 @@ def vpn_check():
             ip = get('https://api.ipify.org').text
             if ip.startswith(tuple(xfinity_prefixes)):
                 print('{} - VPN Not Detected!'.format(str(datetime.now())))
-                subprocess.call('netsh interface set interface {} DISABLED'.format(
-                    network_adapter), stdout=open(os.devnull, 'wb'))
+                subprocess.call('netsh interface set interface {} DISABLED'.format(adapter),
+                                stdout=open(os.devnull, 'wb'))
             else:
                 print('{} - VPN Working!'.format(str(datetime.now())))
         except Exception:
