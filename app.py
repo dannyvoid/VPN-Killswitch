@@ -26,7 +26,7 @@ xfinity_prefixes = ['24.0', '24.16', '24.30', '24.34', '24.60', '24.91',
 def welcome():
     stamp = str(datetime.now())
     print('############################')
-    print('###  VPN-Killswitch 1.0  ###')
+    print('###  VPN-Killswitch 2.0  ###')
     print('### Created by DannyVoid ###')
     print('############################')
     print('\nStarted at {}'.format(stamp))
