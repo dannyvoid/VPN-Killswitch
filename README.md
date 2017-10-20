@@ -17,7 +17,7 @@ pip install apscheduler
 
 ### Config
 
-* Replace **Ethernet** on line 13 of **app.py**.
+* Replace **Ethernet** on line 14 of **app.py**.
 
 ```python
 network_adapter = 'Ethernet'
