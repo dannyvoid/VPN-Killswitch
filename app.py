@@ -8,7 +8,12 @@ from requests import get
 
 from apscheduler.schedulers.background import BackgroundScheduler
 
-adapter = 'Ethernet'
+adapter = 'Ethernet'                    # name of your primary network adaptor
+socket_test_url = 'www.google.com'      # don't change
+check_ip_url = 'https://api.ipify.org'  # don't change
+vpn_check_int = 10                      # interval in seconds
+offline_check_int = 30                  # interval in minutes
+auto_restart = True                     # restarts machine if offline for an extended period
 
 xfinity_prefixes = ['24.0', '24.16', '24.30', '24.34', '24.60', '24.91',
                     '24.98', '24.118', '24.125', '24.126', '24.128', '24.129', '24.130', '24.147',
@@ -32,7 +37,7 @@ def welcome():
 
 def is_online():
     try:
-        socket.create_connection(('www.google.com', 80))
+        socket.create_connection((socket_test_url, 80))
         return True
     except Exception:
         pass
@@ -42,7 +47,7 @@ def is_online():
 def vpn_check():
     if is_online():
         try:
-            ip = get('https://api.ipify.org').text
+            ip = get(check_ip_url).text
             if ip.startswith(tuple(xfinity_prefixes)):
                 print('{} - VPN Not Detected!'.format(str(datetime.now())))
                 subprocess.call('netsh interface set interface {} DISABLED'.format(adapter),
@@ -55,9 +60,23 @@ def vpn_check():
         print('{} - Network Offline!'.format(str(datetime.now())))
 
 
+def reboot_if_offline():
+    if auto_restart:
+        if not is_online:
+            print('{} - Machine has been offline for {} minutes.'.format(str(datetime.now()), str(offline_check_int)))
+            print('{} - Rebooting in 60 seconds!'.format(str(datetime.now())))
+            subprocess.call('shutdown -t 60 -r -f', stdout=open(os.devnull, 'wb'))
+        else:
+            print('{} - Checking for errors again in {} minutes.'.format(str(datetime.now()), str(offline_check_int)))
+            pass
+    else:
+        pass
+
+
 if __name__ == '__main__':
     scheduler = BackgroundScheduler()
-    scheduler.add_job(vpn_check, 'interval', seconds=1)
+    scheduler.add_job(vpn_check, 'interval', seconds=vpn_check_int)
+    scheduler.add_job(reboot_if_offline, 'interval', minutes=offline_check_int)
     scheduler.start()
     welcome()
 
