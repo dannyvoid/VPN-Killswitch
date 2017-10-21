@@ -17,10 +17,15 @@ pip install apscheduler
 
 ### Config
 
-* Replace **Ethernet** with the name of your network adapter on line 11 of **app.py**.
+* Edit lines 11-16 of **app.py**.
 
 ```python
-adapter = 'Ethernet'
+adapter = 'Ethernet'                    # name of your primary network adaptor
+socket_test_url = 'www.google.com'      # don't change
+check_ip_url = 'https://api.ipify.org'  # don't change
+vpn_check_int = 10                      # interval in seconds
+offline_check_int = 30                  # interval in minutes
+auto_restart = True                     # restarts machine if offline for an extended period
 ```
 
 * And finally, run **start.bat** as an administrator.
