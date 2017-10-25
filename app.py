@@ -1,4 +1,5 @@
 import os
+import os.path
 import socket
 import subprocess
 import time
@@ -9,11 +10,13 @@ from requests import get
 from apscheduler.schedulers.background import BackgroundScheduler
 
 adapter = 'Ethernet'                    # name of your primary network adaptor
-socket_test_url = 'www.google.com'      # don't change
-check_ip_url = 'https://api.ipify.org'  # don't change
-vpn_check_int = 10                      # interval in seconds
-offline_check_int = 30                  # interval in minutes
-auto_restart = True                     # restarts machine if offline for an extended period
+socket_url = 'www.google.com'           # don't change
+ip_url = 'https://api.ipify.org'        # don't change
+vpn_interval = 1                        # interval in seconds
+off_interval = 30                       # interval in minutes
+auto_reboot = True                      # restarts machine if offline for an extended period
+start_on_boot = False                   # starts VPN-Killswitch on windows startup
+debug = True                            # outputs your IP
 
 xfinity_prefixes = ['24.0', '24.16', '24.30', '24.34', '24.60', '24.91',
                     '24.98', '24.118', '24.125', '24.126', '24.128', '24.129', '24.130', '24.147',
@@ -26,9 +29,10 @@ xfinity_prefixes = ['24.0', '24.16', '24.30', '24.34', '24.60', '24.91',
                     '98.240', '98.242', '98.244', '98.248', '107.2', '107.4', '174.48']
 
 
-def welcome():
+def motd():
+    handle_startup()
     print('############################')
-    print('###  VPN-Killswitch 2.1  ###')
+    print('###  VPN-Killswitch 2.5  ###')
     print('### Created by DannyVoid ###')
     print('############################')
     print('\nStarted at {}'.format(str(datetime.now())))
@@ -37,7 +41,7 @@ def welcome():
 
 def is_online():
     try:
-        socket.create_connection((socket_test_url, 80))
+        socket.create_connection((socket_url, 80))
         return True
     except Exception:
         pass
@@ -47,13 +51,17 @@ def is_online():
 def vpn_check():
     if is_online():
         try:
-            ip = get(check_ip_url).text
+            ip = get(ip_url).text
             if ip.startswith(tuple(xfinity_prefixes)):
                 print('{} - VPN Not Detected!'.format(str(datetime.now())))
                 subprocess.call('netsh interface set interface {} DISABLED'.format(adapter),
                                 stdout=open(os.devnull, 'wb'))
+                if debug:
+                    print('{} - {}'.format(str(datetime.now()), ip))
             else:
                 print('{} - VPN Working!'.format(str(datetime.now())))
+                if debug:
+                    print('{} - {}'.format(str(datetime.now()), ip))
         except Exception:
             pass
     else:
@@ -61,24 +69,57 @@ def vpn_check():
 
 
 def reboot_if_offline():
-    if auto_restart:
+    if auto_reboot:
         if not is_online:
-            print('{} - Machine has been offline for {} minutes.'.format(str(datetime.now()), str(offline_check_int)))
+            print('{} - Machine has been offline for {} minutes.'.format(str(datetime.now()), str(off_interval)))
             print('{} - Rebooting in 60 seconds!'.format(str(datetime.now())))
             subprocess.call('shutdown -t 60 -r -f', stdout=open(os.devnull, 'wb'))
         else:
-            print('{} - Checking for errors again in {} minutes.'.format(str(datetime.now()), str(offline_check_int)))
+            print('{} - Checking for errors again in {} minutes.'.format(str(datetime.now()), str(off_interval)))
             pass
     else:
         pass
 
 
+def handle_startup():
+    current_dir = os.getcwd()
+    startup_dir = 'C:/Users/{}/AppData/Roaming/Microsoft/Windows/Start Menu/Programs/Startup'.format(os.getlogin())
+    filename = 'VPN-Killswitch.bat'
+
+    if start_on_boot:
+        with open(os.path.join(startup_dir, filename), 'w') as batch:
+            batch_file = (
+                '@echo off\n\n'
+
+                'NET SESSION >NUL\n'
+                'IF %ERRORLEVEL% NEQ 0 GOTO ELEVATE >NUL\n'
+                'goto :start\n\n'
+
+                ':ELEVATE\n'
+                'CD /d %~dp0\n'
+                'MSHTA \"javascript: var shell = new ActiveXObject(\'shell.application\');'
+                'shell.ShellExecute(\'%~nx0\', \'\', \'\', \'runas\', 1);close();\" >NUL\n'
+                'EXIT\n\n'
+
+                ':start\n'
+                'cd /d "{}"\n'
+                'ping -n 30 -w 1 127.0.0.1>nul\n'
+                'python app.py\n\n'.format(current_dir)
+            )
+            batch.write('{}'.format(batch_file))
+    else:
+        try:
+            os.remove(os.path.join(startup_dir, filename))
+        except OSError:
+            pass
+
+
 if __name__ == '__main__':
     scheduler = BackgroundScheduler()
-    scheduler.add_job(vpn_check, 'interval', seconds=vpn_check_int)
-    scheduler.add_job(reboot_if_offline, 'interval', minutes=offline_check_int)
+    scheduler.add_job(vpn_check, 'interval', seconds=vpn_interval)
+    scheduler.add_job(reboot_if_offline, 'interval', minutes=off_interval)
     scheduler.start()
-    welcome()
+    motd()
 
     try:
         while True:
