@@ -103,7 +103,7 @@ def handle_startup():
                 ':start\n'
                 'cd /d "{}"\n'
                 'ping -n 30 -w 1 127.0.0.1>nul\n'
-                'python3 app.py\n\n'.format(current_dir)
+                'python app.py\n\n'.format(current_dir)
             )
             batch.write('{}'.format(batch_file))
     else:
