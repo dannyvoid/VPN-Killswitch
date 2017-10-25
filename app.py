@@ -36,7 +36,6 @@ def motd():
     print('############################')
     print('\nStarted at {}'.format(str(datetime.now())))
     print('-------------------------------------\n')
-    handle_startup()
 
 
 def is_online():
@@ -120,6 +119,7 @@ if __name__ == '__main__':
     scheduler.add_job(reboot_if_offline, 'interval', minutes=off_interval)
     scheduler.start()
     motd()
+    handle_startup()
 
     try:
         while True:
