@@ -30,13 +30,13 @@ xfinity_prefixes = ['24.0', '24.16', '24.30', '24.34', '24.60', '24.91',
 
 
 def motd():
-    handle_startup()
     print('############################')
     print('###  VPN-Killswitch 2.5  ###')
     print('### Created by DannyVoid ###')
     print('############################')
     print('\nStarted at {}'.format(str(datetime.now())))
     print('-------------------------------------\n')
+    handle_startup()
 
 
 def is_online():
