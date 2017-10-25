@@ -12,8 +12,8 @@ from apscheduler.schedulers.background import BackgroundScheduler
 adapter = 'Ethernet'                    # name of your primary network adaptor
 socket_url = 'www.google.com'           # don't change
 ip_url = 'https://api.ipify.org'        # don't change
-vpn_interval = 1                        # interval in seconds
-off_interval = 30                       # interval in minutes
+vpn_interval = 1                        # interval in seconds to check your vpn state
+off_interval = 30                       # interval in minutes to check if your machine needs to reboot
 auto_reboot = True                      # restarts machine if offline for an extended period
 start_on_boot = False                   # starts VPN-Killswitch on windows startup
 debug = True                            # outputs your IP
@@ -104,7 +104,7 @@ def handle_startup():
                 ':start\n'
                 'cd /d "{}"\n'
                 'ping -n 30 -w 1 127.0.0.1>nul\n'
-                'python app.py\n\n'.format(current_dir)
+                'python3 app.py\n\n'.format(current_dir)
             )
             batch.write('{}'.format(batch_file))
     else:
