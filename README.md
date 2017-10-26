@@ -23,11 +23,11 @@ pip install apscheduler
 adapter = 'Ethernet'                    # name of your primary network adaptor
 socket_url = 'www.google.com'           # don't change
 ip_url = 'https://api.ipify.org'        # don't change
-vpn_interval = 1                        # interval in seconds to check your vpn state
-off_interval = 30                       # interval in minutes to check if your machine needs to reboot
+int_vpn_status = 1                      # interval in seconds to check your vpn state
+int_online_status = 30                  # interval in minutes to check if your machine needs to reboot
 auto_reboot = True                      # restarts machine if offline for an extended period
-start_on_boot = False                   # starts VPN-Killswitch on windows startup
-debug = True                            # outputs your IP
+auto_start = False                      # starts VPN-Killswitch on windows startup
+debug = False                           # prints your IP on each check
 ```
 
 * And finally, run **start.bat** as an administrator.
