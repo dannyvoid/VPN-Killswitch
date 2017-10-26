@@ -72,7 +72,6 @@ def is_stuck():
 
 
 def startup_management():
-    current_dir = os.getcwd()
     startup_dir = 'C:/Users/{}/AppData/Roaming/Microsoft/Windows/Start Menu/Programs/Startup'.format(os.getlogin())
     startup_file = os.path.join(startup_dir, 'VPN-Killswitch.bat')
 
@@ -96,7 +95,7 @@ def startup_management():
                 ':start\n'
                 'cd /d "{}"\n'
                 'ping -n 30 -w 1 127.0.0.1>nul\n'
-                'python app.py\n\n'.format(current_dir)
+                'python app.py\n\n'.format(os.getcwd())
             )
             batch.write('{}'.format(batch_file))
     else:
