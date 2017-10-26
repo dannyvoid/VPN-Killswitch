@@ -82,15 +82,15 @@ def startup_management():
             batch_file = (
                 '@echo off\n\n'
 
-                'NET SESSION >NUL\n'
-                'IF %ERRORLEVEL% NEQ 0 GOTO ELEVATE >NUL\n'
+                'net session >nul\n'
+                'if %errorlevel% neq 0 goto elevate >nul\n'
                 'goto :start\n\n'
 
-                ':ELEVATE\n'
-                'CD /d %~dp0\n'
-                'MSHTA \"javascript: var shell = new ActiveXObject(\'shell.application\');'
-                'shell.ShellExecute(\'%~nx0\', \'\', \'\', \'runas\', 1);close();\" >NUL\n'
-                'EXIT\n\n'
+                ':elevate\n'
+                'cd /d %~dp0\n'
+                'mshta \"javascript: var shell = new ActiveXObject(\'shell.application\');'
+                'shell.ShellExecute(\'%~nx0\', \'\', \'\', \'runas\', 1);close();\" >nul\n'
+                'exit\n\n'
 
                 ':start\n'
                 'cd /d "{}"\n'
