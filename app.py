@@ -12,8 +12,8 @@ from apscheduler.schedulers.background import BackgroundScheduler
 adapter = 'Ethernet'                    # name of your primary network adaptor
 socket_url = 'www.google.com'           # don't change
 ip_url = 'https://api.ipify.org'        # don't change
-int_vpn_status = 1                      # interval in seconds to check your vpn state
-int_online_status = 30                  # interval in minutes to check if your machine needs to reboot
+int_is_vpn = 1                          # interval in seconds to check your vpn state
+int_is_stuck = 30                       # interval in minutes to check if your machine needs to reboot
 auto_reboot = False                     # restarts machine if offline for an extended period
 auto_start = False                      # starts VPN-Killswitch on windows startup
 debug = False                           # prints your IP on each check
@@ -61,11 +61,11 @@ def is_vpn():
 def is_stuck():
     if auto_reboot:
         if not is_online:
-            print('{} - Machine has been offline for {} minutes.'.format(str(datetime.now()), str(int_online_status)))
+            print('{} - Machine has been offline for {} minutes.'.format(str(datetime.now()), str(int_is_stuck)))
             print('{} - Rebooting in 60 seconds!'.format(str(datetime.now())))
             subprocess.call('shutdown -t 60 -r -f', stdout=open(os.devnull, 'wb'))
         else:
-            print('{} - Checking for errors again in {} minutes.'.format(str(datetime.now()), str(int_online_status)))
+            print('{} - Checking for errors again in {} minutes.'.format(str(datetime.now()), str(int_is_stuck)))
             pass
     else:
         pass
@@ -111,8 +111,8 @@ def delete_file(file):
 
 if __name__ == '__main__':
     scheduler = BackgroundScheduler()
-    scheduler.add_job(is_vpn, 'interval', seconds=int_vpn_status)
-    scheduler.add_job(is_stuck, 'interval', minutes=int_online_status)
+    scheduler.add_job(is_vpn, 'interval', seconds=int_is_vpn)
+    scheduler.add_job(is_stuck, 'interval', minutes=int_is_stuck)
     scheduler.start()
 
     print('############################')
