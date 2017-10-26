@@ -12,11 +12,11 @@ from apscheduler.schedulers.background import BackgroundScheduler
 adapter = 'Ethernet'                    # name of your primary network adaptor
 socket_url = 'www.google.com'           # don't change
 ip_url = 'https://api.ipify.org'        # don't change
-vpn_interval = 1                        # interval in seconds to check your vpn state
-off_interval = 30                       # interval in minutes to check if your machine needs to reboot
+int_vpn_status = 1                      # interval in seconds to check your vpn state
+int_online_status = 30                  # interval in minutes to check if your machine needs to reboot
 auto_reboot = True                      # restarts machine if offline for an extended period
-start_on_boot = False                   # starts VPN-Killswitch on windows startup
-debug = True                            # outputs your IP
+auto_start = False                      # starts VPN-Killswitch on windows startup
+debug = False                           # prints your IP on each check
 
 xfinity_prefixes = ['24.0', '24.16', '24.30', '24.34', '24.60', '24.91',
                     '24.98', '24.118', '24.125', '24.126', '24.128', '24.129', '24.130', '24.147',
@@ -29,15 +29,6 @@ xfinity_prefixes = ['24.0', '24.16', '24.30', '24.34', '24.60', '24.91',
                     '98.240', '98.242', '98.244', '98.248', '107.2', '107.4', '174.48']
 
 
-def motd():
-    print('############################')
-    print('###  VPN-Killswitch 2.5  ###')
-    print('### Created by DannyVoid ###')
-    print('############################')
-    print('\nStarted at {}'.format(str(datetime.now())))
-    print('-------------------------------------\n')
-
-
 def is_online():
     try:
         socket.create_connection((socket_url, 80))
@@ -47,7 +38,7 @@ def is_online():
     return False
 
 
-def vpn_check():
+def is_vpn():
     if is_online():
         try:
             ip = get(ip_url).text
@@ -67,26 +58,28 @@ def vpn_check():
         print('{} - Network Offline!'.format(str(datetime.now())))
 
 
-def reboot_if_offline():
+def is_stuck():
     if auto_reboot:
         if not is_online:
-            print('{} - Machine has been offline for {} minutes.'.format(str(datetime.now()), str(off_interval)))
+            print('{} - Machine has been offline for {} minutes.'.format(str(datetime.now()), str(int_online_status)))
             print('{} - Rebooting in 60 seconds!'.format(str(datetime.now())))
             subprocess.call('shutdown -t 60 -r -f', stdout=open(os.devnull, 'wb'))
         else:
-            print('{} - Checking for errors again in {} minutes.'.format(str(datetime.now()), str(off_interval)))
+            print('{} - Checking for errors again in {} minutes.'.format(str(datetime.now()), str(int_online_status)))
             pass
     else:
         pass
 
 
-def handle_startup():
+def startup_management():
     current_dir = os.getcwd()
     startup_dir = 'C:/Users/{}/AppData/Roaming/Microsoft/Windows/Start Menu/Programs/Startup'.format(os.getlogin())
-    filename = 'VPN-Killswitch.bat'
+    startup_file = os.path.join(startup_dir, 'VPN-Killswitch.bat')
 
-    if start_on_boot:
-        with open(os.path.join(startup_dir, filename), 'w') as batch:
+    if auto_start:
+        delete_file(startup_file)
+
+        with open(startup_file, 'w') as batch:
             batch_file = (
                 '@echo off\n\n'
 
@@ -107,19 +100,30 @@ def handle_startup():
             )
             batch.write('{}'.format(batch_file))
     else:
-        try:
-            os.remove(os.path.join(startup_dir, filename))
-        except OSError:
-            pass
+        delete_file(startup_file)
+
+
+def delete_file(file):
+    try:
+        os.remove(file)
+    except OSError:
+        pass
 
 
 if __name__ == '__main__':
     scheduler = BackgroundScheduler()
-    scheduler.add_job(vpn_check, 'interval', seconds=vpn_interval)
-    scheduler.add_job(reboot_if_offline, 'interval', minutes=off_interval)
+    scheduler.add_job(is_vpn, 'interval', seconds=int_vpn_status)
+    scheduler.add_job(is_stuck, 'interval', minutes=int_online_status)
     scheduler.start()
-    motd()
-    handle_startup()
+
+    print('############################')
+    print('###  VPN-Killswitch 2.5  ###')
+    print('### Created by DannyVoid ###')
+    print('############################')
+    print('\nStarted at {}'.format(str(datetime.now())))
+    print('-------------------------------------\n')
+
+    startup_management()
 
     try:
         while True:
